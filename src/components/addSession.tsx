@@ -203,21 +203,27 @@ function AddSession() {
           </div>
           <div className="flex flex-row gap-4">
             <div className="flex flex-col flex-1 gap-1">
-              <Label htmlFor="price">Price</Label>
+              <Label htmlFor="price">Price (€)</Label>
               <Input
                 id="price"
-                value={formatEur(parseFloat(newSession.price ?? "0.00"))}
-                onChange={(e) =>
-                  setNewSession({ ...newSession, price: e.target.value })
-                }
+                value={parseFloat(
+                  newSession.price == "" ? "0.00" : newSession.price,
+                )}
+                onChange={(e) => {
+                  console.log("input", e.target.value);
+
+                  setNewSession({ ...newSession, price: e.target.value });
+                }}
                 className="col-span-3"
               />
             </div>
             <div className="flex flex-col flex-1 gap-1">
-              <Label htmlFor="discount">Discount</Label>
+              <Label htmlFor="discount">Discount (€)</Label>
               <Input
                 id="discount"
-                value={formatEur(parseFloat(newSession.discount ?? "0.00"))}
+                value={parseFloat(
+                  newSession.discount == "" ? "0.00" : newSession.discount,
+                )}
                 onChange={(e) =>
                   setNewSession({ ...newSession, discount: e.target.value })
                 }
