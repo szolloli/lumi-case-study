@@ -13,7 +13,7 @@ function Select({
   onChange,
 }: {
   options: string[];
-  value: string;
+  value: string | undefined;
   type: string;
   onChange: (value: string) => void;
 }) {

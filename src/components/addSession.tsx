@@ -17,7 +17,7 @@ import { Checkbox } from "./ui/checkbox";
 import { useMemo, useState } from "react";
 import { PlusCircle } from "lucide-react";
 import Select from "./select";
-import { formatEur } from "@/lib/utils";
+import { v4 as uuidv4 } from "uuid";
 import { useSessionStore } from "@/state/sessionStore";
 
 const Times = Array(24)
@@ -38,7 +38,9 @@ const Durations = Array(12)
   .flat();
 
 function AddSession() {
-  const [newSession, setNewSession] = useState<Session & { time: Date }>({});
+  const [newSession, setNewSession] = useState<
+    Partial<Session & { time: Date }>
+  >({});
   const [open, setOpen] = useState(false);
   const { addSession } = useSessionStore();
 
@@ -86,7 +88,8 @@ function AddSession() {
             </Label>
             <Input
               id="name"
-              value={newSession.name ?? "Session name"}
+              placeholder="Session name"
+              value={newSession.name}
               onChange={(e) =>
                 setNewSession({ ...newSession, name: e.target.value })
               }
@@ -206,9 +209,7 @@ function AddSession() {
               <Label htmlFor="price">Price (€)</Label>
               <Input
                 id="price"
-                value={parseFloat(
-                  newSession.price == "" ? "0.00" : newSession.price,
-                )}
+                value={newSession.price}
                 onChange={(e) => {
                   console.log("input", e.target.value);
 
@@ -221,9 +222,7 @@ function AddSession() {
               <Label htmlFor="discount">Discount (€)</Label>
               <Input
                 id="discount"
-                value={parseFloat(
-                  newSession.discount == "" ? "0.00" : newSession.discount,
-                )}
+                value={newSession.discount}
                 onChange={(e) =>
                   setNewSession({ ...newSession, discount: e.target.value })
                 }
@@ -306,8 +305,13 @@ function AddSession() {
               setOpen(false);
               // Combine selected date and time into one date object
               const { date, time, ...rest } = newSession;
-              date.setHours(time.getHours(), time.getMinutes());
-              addSession({ ...rest, date });
+              // We know date and time are set because we are using the isButtonDisabled value
+              date!.setHours(time!.getHours(), time!.getMinutes());
+              addSession({
+                ...rest,
+                date: new Date(),
+                id: uuidv4(),
+              } as Session);
             }}
           >
             Add session
